@@ -65,7 +65,7 @@ module TwitterFunctions
          
          statuses.each do |status|
             
-            tweet_id = status.first('id').to_i
+            tweet_id = status.first('id')
             
             if Tweet.get(tweet_id).nil?
                time_arr = status.first('created_at').split(" ")
