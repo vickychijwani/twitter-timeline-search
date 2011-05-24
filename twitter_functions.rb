@@ -19,7 +19,7 @@ module TwitterFunctions
                users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end
             }
          when 2 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
-         when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && User.get(tweet.in_reply_to_screen_name) == search_term.to_i }
+         when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.in_reply_to_screen_name == search_term }
       end
    end
 
@@ -78,7 +78,7 @@ module TwitterFunctions
                   :truncated                => status.first('truncated').to_b,
                   :favorited                => status.first('favorited').to_b,
                   :in_reply_to_status_id    => ( status.first('in_reply_to_status_id').to_i if status.first('in_reply_to_status_id') != "" ),
-                  :in_reply_to_user_id      => ( status.first('in_reply_to_user_id').to_i if status.first('in_reply_to_user_id') != "" ),
+                  :in_reply_to_screen_name  => ( status.first('in_reply_to_screen_name') if status.first('in_reply_to_screen_name') != "" ),
                   :retweets                 => status.first('retweet_count').to_i
                )
                
