@@ -15,7 +15,7 @@ require 'twitter_functions'
 
 include TwitterFunctions
 
-DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/tweets.db")
+DataMapper::setup(:default, (ENV["DATABASE_URL"] || "sqlite3://#{Dir.pwd}/tweets.db") )
 # DataMapper.auto_migrate!
 Tweet.auto_migrate! unless Tweet.storage_exists?
 User.auto_migrate! unless User.storage_exists?
