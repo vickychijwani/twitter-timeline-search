@@ -71,7 +71,7 @@ module TwitterFunctions
                created_at = Time.mktime(time_arr[5].to_i, time_arr[1].downcase!, time_arr[2].to_i, hour, min, sec)
                
                tweet = Tweet.new(
-                  :id                       => status.first('id').to_i,
+                  :id                       => status.first('id'),
                   :created_at               => created_at,
                   :text                     => status.first('text'),
                   :source                   => status.first('source'),

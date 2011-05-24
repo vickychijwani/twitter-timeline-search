@@ -8,7 +8,7 @@ require 'models/geolocation'
 class Tweet
    include DataMapper::Resource
    
-   property :id,                       Integer,       :required => true,   :index => true,                     :key => true
+   property :id,                       String,        :required => true,   :index => true,   :length => 20,    :key => true
    
    property :created_at,               DateTime,      :required => true,   :index => true
    property :text,                     Text,          :required => true,   :index => true,   :length => 140,   :lazy => false
