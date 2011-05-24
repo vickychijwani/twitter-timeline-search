@@ -34,7 +34,7 @@ module TwitterFunctions
          rescue OpenURI::HTTPError => e
             puts "URL: "+url
             puts e.message
-            puts e.backtrace
+            # puts e.backtrace
             puts "No such user."
             redirect '/?user_exists=false'
          end
