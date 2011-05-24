@@ -1,0 +1,21 @@
+%head
+   %title Twitter timeline search
+
+#links
+   %ul{ :style => "list-style:none; display:inline;" }
+      %li
+         %a{ :href => ".." } Load another user's tweets
+      %li
+         %a{ :href => "./search" } Search tweets
+
+%hr
+
+- if params[:user_exists] == "false"
+   #no-user{ :style => "color:red;" } No such user.
+   
+
+#user
+   %form{ :action => "loading", :method => "get" }
+      %div{ :style => "font-size: 25px;" } User:
+      %input#user-box{ :type => "text", :name => "user" }
+      %input#load-tweets{ :type => "submit", :value => "Load Tweets" }

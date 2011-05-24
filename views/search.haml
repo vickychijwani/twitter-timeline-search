@@ -1,0 +1,46 @@
+%head
+   %title Twitter timeline search
+
+#links
+   %ul{ :style => "list-style:none; display:inline;" }
+      %li
+         %a{ :href => ".." } Load another user's tweets
+      %li
+         %a{ :href => "./search" } Search tweets
+
+%hr
+
+#search
+   %div{ :style => "font-size: 25px;" } Search Tweets:
+   %form{ :action => "search", :method => "get" }
+      %select{ :name => "users" }
+         %option{ :value => "0" } All users
+         - User.all.each do |user|
+            %option{ :value => "#{user.id}" }
+               = "@"+user.screen_name
+      %br
+      %select{ :name => "search_type" }
+         %option{ :value => "0" } By keyword
+         %option{ :value => "1" } On date
+         %option{ :value => "2" } Before date
+         %option{ :value => "3" } After date
+         %option{ :value => "4" } Retweets greater than
+         %option{ :value => "5" } In reply to
+      %br
+      %input#search-box{ :type => "text", :name => "search_term" }
+      %input#search-tweets{ :type => "submit", :value => "Search" }
+      %div (Date format: "yyyy/mm/dd")
+
+%hr
+
+#results
+   - if @search_term
+      %h3
+         = "Results for '"+@search_term+"':"
+      - @tweets.each do |tweet|
+         %p{ :style => "font-weight:bold;" }
+            = "@"+User.get(tweet.user.id).screen_name
+         %p{ :float => "left" }
+            = tweet.text
+         %p{ :float => "left" }
+            = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
