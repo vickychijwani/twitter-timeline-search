@@ -32,6 +32,7 @@ module TwitterFunctions
          begin
             timeline_xml_doc = Nokogiri::XML(open(url))
          rescue OpenURI::HTTPError => e
+            puts "URL: "+url
             puts e.message
             puts e.backtrace
             puts "No such user."
