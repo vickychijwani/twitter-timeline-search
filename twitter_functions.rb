@@ -24,7 +24,7 @@ module TwitterFunctions
    end
 
    def load_tweets(user_name)
-      (1..10).each do |i|
+      (1..1).each do |i|
          puts "Page #{i}"
          
          url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user_name}"
@@ -123,7 +123,6 @@ module TwitterFunctions
          end
          
          user.save
-         sleep(2)
       end
    end
    

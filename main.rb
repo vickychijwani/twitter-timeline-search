@@ -29,7 +29,7 @@ end
 get '/loading' do
    user = params[:user]
    load_tweets(user)
-   redirect '/search'
+   # redirect '/search'
 end
 
 get '/search' do

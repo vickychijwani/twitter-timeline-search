@@ -1,5 +1,7 @@
 %head
    %title Twitter timeline search
+   %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
+   %script{ :type => "text/javascript", :src => "js/script.js" }
 
 #links
    %ul{ :style => "list-style:none; display:inline;" }
@@ -15,7 +17,7 @@
    
 
 #user
-   %form{ :action => "loading", :method => "get" }
+   %form#load-tweets-form
       %div{ :style => "font-size: 25px;" } User:
       %input#user-box{ :type => "text", :name => "user" }
       %input#load-tweets{ :type => "submit", :value => "Load Tweets" }
