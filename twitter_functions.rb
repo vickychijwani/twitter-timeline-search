@@ -12,19 +12,22 @@ module TwitterFunctions
       end
       
       case search_type
-         when 0 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.text.downcase.include?(search_term) }
+         when 0 then
+            # tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.text.downcase.include?(search_term) }
+            tweets = Tweet.all(Tweet.user.screen_name => users, :text.like => "%"+search_term+"%")
          when 1 then
             date_start, date_end = search_term.split(" to ")
             tweets = Tweet.all.find_all { |tweet|
                users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end
             }
+            # tweets = Tweet.all(Tweet.user.screen_name => users)
          when 2 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
          when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.in_reply_to_screen_name == search_term }
       end
    end
 
    def load_tweets(user_name)
-      (1..10).each do |i|
+      (1..50).each do |i|
          puts "Page #{i}"
          
          url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user_name}"
