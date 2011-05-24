@@ -6,20 +6,21 @@ module TwitterFunctions
       tweets = []
       
       if users == "0"
-         users = User.all.map { |user| user = user.id }
+         users = User.all.map { |user| user = user.screen_name }
       else
-         *users = users.to_i
+         *users = users
       end
       
       case search_type
-         when 0 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && tweet.text.downcase.include?(search_term) }
-         when 1 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && search_term == tweet.created_at.strftime("20%y/%m/%d") }
-         when 2 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && search_term > tweet.created_at.strftime("20%y/%m/%d") }
-         when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && search_term < tweet.created_at.strftime("20%y/%m/%d") }
-         when 4 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && tweet.retweets > search_term.to_i }
-         when 5 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.id) && User.get(tweet.in_reply_to_user_id) == search_term.to_i }
+         when 0 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.text.downcase.include?(search_term) }
+         when 1 then
+            date_start, date_end = search_term.split(" to ")
+            tweets = Tweet.all.find_all { |tweet|
+               users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end
+            }
+         when 2 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
+         when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && User.get(tweet.in_reply_to_screen_name) == search_term.to_i }
       end
-      tweets
    end
 
    def load_tweets(user)
@@ -27,6 +28,7 @@ module TwitterFunctions
          puts "Page #{i}"
          
          url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user}"
+         # url = "user_timeline.xml"
          begin
             timeline_xml_doc = Nokogiri::XML(open(url))
          rescue OpenURI::HTTPError
@@ -38,47 +40,26 @@ module TwitterFunctions
          statuses = timeline_xml_doc.css('statuses status')
          
          user_element = statuses.at_css('status user')
+         screen_name = user_element.first('screen_name')
          time_arr = user_element.first('created_at').split(" ")
          hour, min, sec = time_arr[3].scan(/\d\d/).map(&:to_i)
          created_at = Time.mktime(time_arr[5].to_i, time_arr[1].downcase!, time_arr[2].to_i, hour, min, sec)
          
-         user = User.new(
-            :id                              => user_element.first('id').to_i,
-            :name                            => user_element.first('name'),
-            :screen_name                     => user_element.first('screen_name'),
-            :location                        => user_element.first('location'),
-            :description                     => user_element.first('description'),
-            :profile_image_url               => user_element.first('profile_image_url'),
-            :url                             => user_element.first('url'),
-            :protected                       => user_element.first('protected').to_b,
-            :followers_count                 => user_element.first('followers_count').to_i,
-            :profile_background_color        => user_element.first('profile_background_color'),
-            :profile_text_color              => user_element.first('profile_text_color'),
-            :profile_link_color              => user_element.first('profile_link_color'),
-            :profile_sidebar_fill_color      => user_element.first('profile_sidebar_fill_color'),
-            :profile_sidebar_border_color    => user_element.first('profile_sidebar_border_color'),
-            :friends_count                   => user_element.first('friends_count').to_i,
-            :created_at                      => created_at,
-            :favourites_count                => user_element.first('favourites_count').to_i,
-            :utc_offset                      => user_element.first('utc_offset').to_i,
-            :time_zone                       => user_element.first('time_zone'),
-            :profile_background_image_url    => user_element.first('profile_background_image_url'),
-            :profile_background_tile         => user_element.first('profile_background_tile').to_b,
-            :profile_use_background_image    => user_element.first('profile_use_background_image').to_b,
-            :notifications                   => user_element.first('notifications').to_b,
-            :geo_enabled                     => user_element.first('geo_enabled').to_b,
-            :verified                        => user_element.first('verified').to_b,
-            :following                       => user_element.first('following').to_b,
-            :statuses_count                  => user_element.first('statuses_count').to_i,
-            :lang                            => user_element.first('lang'),
-            :contributors_enabled            => user_element.first('contributors_enabled').to_b,
-            :follow_request_sent             => user_element.first('follow_request_sent').to_b,
-            :listed_count                    => user_element.first('listed_count').to_i,
-            :show_all_inline_media           => user_element.first('show_all_inline_media').to_b,
-            :default_profile                 => user_element.first('default_profile').to_b,
-            :default_profile_image           => user_element.first('default_profile_image').to_b,
-            :is_translator                   => user_element.first('is_translator').to_b
-         )
+         user = User.get(screen_name)
+         if user.nil?
+            user = User.new(
+               :screen_name         => screen_name,
+               :name                => user_element.first('name'),
+               :location            => user_element.first('location'),
+               :description         => user_element.first('description'),
+               :profile_image_url   => user_element.first('profile_image_url'),
+               :url                 => user_element.first('url'),
+               :followers_count     => user_element.first('followers_count').to_i,
+               :friends_count       => user_element.first('friends_count').to_i,
+               :statuses_count      => user_element.first('statuses_count').to_i,
+               :lang                => user_element.first('lang')
+            )
+         end
          
          statuses.each do |status|
             
@@ -89,29 +70,21 @@ module TwitterFunctions
                hour, min, sec = time_arr[3].scan(/\d\d/).map(&:to_i)
                created_at = Time.mktime(time_arr[5].to_i, time_arr[1].downcase!, time_arr[2].to_i, hour, min, sec)
                
-               geo_lat, geo_long = status.first('geo').split(" ") if status.first('geo')
-               coord_lat, coord_long = status.first('coordinates').split(" ") if status.first('coordinates')            
-               
                tweet = Tweet.new(
-                  :id                              => status.first('id').to_i,
-                  :created_at                      => created_at,
-                  :text                            => status.first('text'),
-                  :source                          => status.first('source'),
-                  :truncated                       => status.first('truncated').to_b,
-                  :favorited                       => status.first('favorited').to_b,
-                  :in_reply_to_status_id           => ( status.first('in_reply_to_status_id').to_i if status.first('in_reply_to_status_id') != "" ),
-                  :in_reply_to_user_id             => ( status.first('in_reply_to_user_id').to_i if status.first('in_reply_to_user_id') != "" ),
-                  :retweets                        => status.first('retweet_count').to_i,
-                  :geo_lat                         => geo_lat,
-                  :geo_long                        => geo_long,
-                  :coord_lat                       => coord_lat,
-                  :coord_long                      => coord_long
+                  :id                       => status.first('id').to_i,
+                  :created_at               => created_at,
+                  :text                     => status.first('text'),
+                  :source                   => status.first('source'),
+                  :truncated                => status.first('truncated').to_b,
+                  :favorited                => status.first('favorited').to_b,
+                  :in_reply_to_status_id    => ( status.first('in_reply_to_status_id').to_i if status.first('in_reply_to_status_id') != "" ),
+                  :in_reply_to_user_id      => ( status.first('in_reply_to_user_id').to_i if status.first('in_reply_to_user_id') != "" ),
+                  :retweets                 => status.first('retweet_count').to_i
                )
                
                user.tweets << tweet
                
                place_element = status.at_css('place')
-               
                if place_element.content != ""
                   place = Place.get(place_element.first('id'))
                   if place.nil?
@@ -121,14 +94,25 @@ module TwitterFunctions
                         :full_name     => place_element.first('full_name'),
                         :place_type    => place_element.first('place_type'),
                         :country       => place_element.first('country')
-                        )
+                     )
                   end
                   place.tweets << tweet
                   place.save
                end
                
-            # else
-               # return   # return because if the current tweet exists in the db, then we can assume that all previous tweets do too
+               geo_element = status.at_css('geo')
+               if geo_element.content != ""
+                  latitude, longitude = geo_element.content.split(" ")
+                  geolocation = Geolocation.get(latitude, longitude)
+                  if geolocation.nil?
+                     geolocation = Geolocation.new(
+                        :latitude   => latitude,
+                        :longitude  => longitude
+                     )
+                  end
+                  geolocation.tweets << tweet
+                  geolocation.save
+               end
             end
          end
          

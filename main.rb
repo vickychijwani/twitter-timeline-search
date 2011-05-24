@@ -12,9 +12,11 @@ require 'twitter_functions'
 include TwitterFunctions
 
 DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/tweets.db")
+# DataMapper.auto_migrate!
 Tweet.auto_migrate! unless Tweet.storage_exists?
 User.auto_migrate! unless User.storage_exists?
 Place.auto_migrate! unless Place.storage_exists?
+Geolocation.auto_migrate! unless Geolocation.storage_exists?
 
 get '/' do
    haml :user

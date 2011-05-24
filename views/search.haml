@@ -16,20 +16,18 @@
       %select{ :name => "users" }
          %option{ :value => "0" } All users
          - User.all.each do |user|
-            %option{ :value => "#{user.id}" }
+            %option{ :value => "#{user.screen_name}" }
                = "@"+user.screen_name
       %br
       %select{ :name => "search_type" }
          %option{ :value => "0" } By keyword
-         %option{ :value => "1" } On date
-         %option{ :value => "2" } Before date
-         %option{ :value => "3" } After date
-         %option{ :value => "4" } Retweets greater than
-         %option{ :value => "5" } In reply to
+         %option{ :value => "1" } Between 2 dates
+         %option{ :value => "2" } Retweets greater than
+         %option{ :value => "3" } In reply to
       %br
       %input#search-box{ :type => "text", :name => "search_term" }
       %input#search-tweets{ :type => "submit", :value => "Search" }
-      %div (Date format: "yyyy/mm/dd")
+      %div (Date range format: "yyyy/mm/dd to yyyy/mm/dd")
 
 %hr
 
@@ -39,7 +37,7 @@
          = "Results for '"+@search_term+"':"
       - @tweets.each do |tweet|
          %p{ :style => "font-weight:bold;" }
-            = "@"+User.get(tweet.user.id).screen_name
+            = "@"+User.get(tweet.user.screen_name).screen_name
          %p{ :float => "left" }
             = tweet.text
          %p{ :float => "left" }
