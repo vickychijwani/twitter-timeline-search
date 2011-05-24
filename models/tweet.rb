@@ -17,7 +17,7 @@ class Tweet
    property :truncated,                Boolean,       :required => true,                                       :default => false
    property :favorited,                Boolean,       :required => true,                                       :default => false
    
-   property :in_reply_to_status_id,    Integer,       :required => false
+   property :in_reply_to_status_id,    String,        :required => false
    property :in_reply_to_screen_name,  String,        :required => false,  :index => true
    
    property :retweets,                 Integer,       :required => true,   :index => true
