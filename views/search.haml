@@ -32,7 +32,7 @@
 %hr
 
 #results
-   - if @search_term
+   - if @search_term && @search_term != ""
       %h3
          = "Results for '"+@search_term+"':"
       - @tweets.each do |tweet|

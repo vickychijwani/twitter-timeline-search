@@ -23,11 +23,11 @@ module TwitterFunctions
       end
    end
 
-   def load_tweets(user)
+   def load_tweets(user_name)
       (1..10).each do |i|
          puts "Page #{i}"
          
-         url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user}"
+         url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user_name}"
          # url = "user_timeline.xml"
          begin
             timeline_xml_doc = Nokogiri::XML(open(url))
@@ -79,7 +79,7 @@ module TwitterFunctions
                   :source                   => status.first('source'),
                   :truncated                => status.first('truncated').to_b,
                   :favorited                => status.first('favorited').to_b,
-                  :in_reply_to_status_id    => ( status.first('in_reply_to_status_id').to_i if status.first('in_reply_to_status_id') != "" ),
+                  :in_reply_to_status_id    => ( status.first('in_reply_to_status_id') if status.first('in_reply_to_status_id') != "" ),
                   :in_reply_to_screen_name  => ( status.first('in_reply_to_screen_name') if status.first('in_reply_to_screen_name') != "" ),
                   :retweets                 => status.first('retweet_count').to_i
                )
@@ -115,7 +115,10 @@ module TwitterFunctions
                   geolocation.tweets << tweet
                   geolocation.save
                end
-            end
+            
+            else
+               return # if the current tweet exists, then return because all further tweets will also exist (tweets are sorted in descending order of time)
+            end # end if Tweet.get(tweet_id).nil?
          end
          
          user.save
