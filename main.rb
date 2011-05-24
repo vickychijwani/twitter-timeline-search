@@ -1,12 +1,16 @@
 require 'rubygems'
-require 'sinatra'
-require 'haml'
-require 'nokogiri'
+require 'bundler/setup'
+Bundler.require(:default)
+
+# require 'sinatra'
+# require 'haml'
+# require 'nokogiri'
+# require 'dm-core'
+# require 'dm-migrations'
+
 require 'net/http'
 require 'open-uri'
 require 'models/tweet'
-require 'dm-core'
-require 'dm-migrations'
 require 'twitter_functions'
 
 include TwitterFunctions
