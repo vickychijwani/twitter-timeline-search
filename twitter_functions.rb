@@ -31,7 +31,9 @@ module TwitterFunctions
          # url = "user_timeline.xml"
          begin
             timeline_xml_doc = Nokogiri::XML(open(url))
-         rescue OpenURI::HTTPError
+         rescue OpenURI::HTTPError => e
+            puts e.message
+            puts e.backtrace
             puts "No such user."
             redirect '/?user_exists=false'
          end
