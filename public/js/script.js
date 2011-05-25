@@ -5,9 +5,9 @@ $(function() {
       
       $.ajax({
          url : "loading",
-         data : { "user" : $("#user-box").val() },
+         data : { "user" : $("input#load-tweets-box").val() },
          success : function() {
-            location.href = "/?status=done";
+            //location.href = "/?status=done";
          }
       });
       

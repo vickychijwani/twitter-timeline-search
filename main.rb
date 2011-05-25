@@ -28,9 +28,7 @@ end
 
 get '/loading' do
    user = params[:user]
-   if user && user != ""
-      load_tweets(user)
-   end
+   load_tweets(user)
    
    # redirect '/search'
 end

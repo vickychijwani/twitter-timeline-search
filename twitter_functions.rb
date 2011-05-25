@@ -2,7 +2,6 @@ require 'nokogiri'
 
 module TwitterFunctions
    NUM_PAGES = 5 # number of pages to index
-   @@tweets = []
    
    def search_tweets(users, search_type, search_term)
       if users == "0"
@@ -82,7 +81,6 @@ module TwitterFunctions
                )
                
                user.tweets << tweet
-               @@tweets.push(tweet)
                
                place_element = status.at_css('place')
                if place_element.content != ""
