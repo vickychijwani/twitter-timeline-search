@@ -120,9 +120,14 @@ body {
    margin-left:10px;
    float:left;
 }
+#links #logo a {
+   font-family:"Pico Black";
+   color:#f8f8f8;
+   font-size:25px;
+}
 #links #bird {
    float:left;
-   margin:0 20px 0 -5px;
+   margin:0 20px 0 -15px;
 }
 #links li {
    height:40px;
