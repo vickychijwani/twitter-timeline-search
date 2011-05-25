@@ -12,6 +12,7 @@ require 'net/http'
 require 'open-uri'
 require 'models/tweet'
 require 'twitter_functions'
+require 'json'
 
 include TwitterFunctions
 
@@ -28,7 +29,10 @@ end
 
 get '/loading' do
    user = params[:user]
-   load_tweets(user)
+   if user && user != ""
+      load_tweets(user)
+   end
+   
    # redirect '/search'
 end
 

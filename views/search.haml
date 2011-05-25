@@ -28,7 +28,11 @@
          %option{ :value => "3" } In reply to
       %input#search-box{ :type => "text", :name => "search_term" }
       %input#search-tweets{ :type => "submit", :value => "Search" }
-      %div#date-format-info (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
+      %div#date-format-info
+         (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
+
+- if params[:status] == "done"
+   #status-done{ :style => "color:red;" } Indexing is over.
 
 %hr
 

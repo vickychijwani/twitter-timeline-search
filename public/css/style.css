@@ -2,6 +2,3 @@ ul { list-style:none; }
 li { display: inline; margin-right:30px; }
 
 div#date-format-info { display:none; }
-
-div#progress-outer { background-color:white; border:1px solid black; height:20px; width:300px; }
-div#progress-inner { background-color:black; width:0%; }

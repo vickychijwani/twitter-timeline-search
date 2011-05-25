@@ -21,18 +21,3 @@
       %div{ :style => "font-size: 25px;" } User:
       %input#user-box{ :type => "text", :name => "user" }
       %input#load-tweets{ :type => "submit", :value => "Load Tweets" }
-
-%div#progress-outer
-   %div#progress-inner
-
-:javascript
-   $(function() {
-      $("form#load-tweets-form").submit(function() {
-         setInterval(function() {
-            current_page = #{@@current_page};
-            num_pages = #{@@num_pages};
-            $("body").append("<p>"+current_page+", "+num_pages+", "+(current_page*100.0)/num_pages+"%</p>");
-            $("div#progress-inner").width((current_page*100.0)/num_pages+"%");
-         }, 1000);
-      });
-   });

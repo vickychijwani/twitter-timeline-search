@@ -1,8 +1,8 @@
 require 'nokogiri'
 
 module TwitterFunctions
-   @@num_pages = 2
-   @@current_page = 0
+   NUM_PAGES = 50 # number of pages to index
+   @@tweets = []
    
    def search_tweets(users, search_type, search_term)
       if users == "0"
@@ -12,26 +12,18 @@ module TwitterFunctions
       end
       
       case search_type
-         when 0 then
-            # tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.text.downcase.include?(search_term) }
-            Tweet.all(Tweet.user.screen_name => users, :text.like => "%"+search_term+"%", :order => [ :created_at.desc ])
+         when 0 then Tweet.all(Tweet.user.screen_name => users, :text.like => "%"+search_term+"%", :order => [ :created_at.desc ])
          when 1 then
             date_start, date_end = search_term.split(" to ").map { |s| s = s+"T00:00:00+00:00" }
             date_start, date_end = DateTime.parse(date_start), DateTime.parse(date_end)
-            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end }
             Tweet.all(Tweet.user.screen_name => users, :created_at.gt => date_start, :order => [ :created_at.desc ]) & Tweet.all(Tweet.user.screen_name => users, :created_at.lt => date_end, :order => [ :created_at.desc ])
-         when 2 then
-            Tweet.all(Tweet.user.screen_name => users, :retweets.gt => search_term.to_i, :order => [ :created_at.desc ])
-            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
-         when 3 then
-            Tweet.all(Tweet.user.screen_name => users, :in_reply_to_screen_name => search_term, :order => [ :created_at.desc ])
-            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.in_reply_to_screen_name == search_term }
+         when 2 then Tweet.all(Tweet.user.screen_name => users, :retweets.gt => search_term.to_i, :order => [ :created_at.desc ])
+         when 3 then Tweet.all(Tweet.user.screen_name => users, :in_reply_to_screen_name => search_term, :order => [ :created_at.desc ])
       end
    end
 
    def load_tweets(user_name)
-      (1..@@num_pages).each do |i|
-         @@current_page = i
+      (1..NUM_PAGES).each do |i|
          puts "Page #{i}"
          
          url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user_name}"
@@ -39,7 +31,6 @@ module TwitterFunctions
          begin
             timeline_xml_doc = Nokogiri::XML(open(url))
          rescue OpenURI::HTTPError => e
-            puts "URL: "+url
             puts e.message
             puts e.backtrace[-20..-1]
             puts "No such user."
@@ -91,6 +82,7 @@ module TwitterFunctions
                )
                
                user.tweets << tweet
+               @@tweets.push(tweet)
                
                place_element = status.at_css('place')
                if place_element.content != ""
