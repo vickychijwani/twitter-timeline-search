@@ -1,17 +1,18 @@
 !!! Strict
 %html
    %head
-      %title Twerch
+      %title Twitcher
       %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
       %script{ :type => "text/javascript", :src => "js/script.js" }
       %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
+      %link{ :rel => "shortcut icon", :href => "images/favicon.ico" }
    
    %body
       #links
          #links-wrapper
             %ul
                %li
-                  #logo twerch
+                  #logo twitcher
                   #bird
                      %img{ :src => "images/twitter.png" }
                %li
@@ -24,7 +25,7 @@
       #message-drawer
          .message.error
             .message-inside
-               %span No such user.
+               %span
                %a.dismiss{ :href => "#" } x
       
       #content
@@ -34,3 +35,15 @@
                %input#load-tweets-box{ :type => "text", :name => "user", :autofocus => "true" }
                %input#load-tweets-button.disabled{ :type => "submit", :value => "Load Tweets", :disabled => "disabled" }
                %img.loading{ :src => "images/progress-dots.gif" }
+         
+         #statistics
+            #total-tweets
+               = "Tweets Indexed <span class='brown-bold'>"+Tweet.count.to_s+"</span>"
+            #users-indexed
+               #total-users
+                  = "Users Indexed <span id='brown-bold'>"+User.count.to_s+"</span>"
+               %ul#users-list
+                  - User.all( :limit => 7 ).each do |user|
+                     %li.user
+                        %a.user-link{ :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                           %img{ :src => "#{user.profile_image_url}" }

@@ -1,19 +1,33 @@
 !!! Strict
 %html
    %head
-      %title Twitter timeline search
+      %title Twerch
       %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
       %script{ :type => "text/javascript", :src => "js/script.js" }
       %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
-
+      %link{ :rel => "shortcut icon", :href => "images/favicon.ico" }
+   
    %body
       #links
          #links-wrapper
             %ul
                %li
+                  #logo twerch
+                  #bird
+                     %img{ :src => "images/twitter.png" }
+               %li
                   %a{ :href => "./load" } Add User
                %li
                   %a.active{ :href => ".." } Search Tweets
+            #caption
+               The Holy Grail of Twitter search.
+      
+      #message-drawer
+         .message.error
+            .message-inside
+               %span
+               %a.dismiss{ :href => "#" } x
+      
       #content
          #main-content
             #search
@@ -29,22 +43,47 @@
                      %option{ :value => "1" } Between 2 dates
                      %option{ :value => "2" } Retweets greater than
                      %option{ :value => "3" } In reply to
-                  %input#search-box{ :type => "text", :name => "search_term" }
-                  %input#search-tweets{ :type => "submit", :value => "Search" }
+                  %input#search-tweets-box{ :type => "text", :name => "search_term", :autofocus => "autofocus" }
+                  %input#search-tweets-button.disabled{ :type => "submit", :value => "Search", :disabled => "disabled" }
                   %div#date-format-info
                      (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
 
-            - if params[:status] && params[:status] == "done"
-               #status-done.notification{ :style => "color:red;" } Indexing is over.
-
             #results
-               - if @search_term && @tweets
-                  %h3
-                     = "Results for '"+@search_term+"':"
-                  - @tweets.each do |tweet|
-                     %p{ :style => "font-weight:bold;" }
-                        = "@"+User.get(tweet.user.screen_name).screen_name
-                     %p{ :float => "left" }
-                        = tweet.text
-                     %p{ :float => "left" }
-                        = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
+               - if !(@search_term && @tweets)
+                  - @tweets = Tweet.all( :order => [ :created_at.desc ] )
+               - if @search_term
+                  #results-title
+                     %p
+                        = "Results for '"+@search_term+"':"
+               - @tweets.each do |tweet|
+                  .result
+                     .result-content
+                        .result-image
+                           %a{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                              %img{ :src => "#{tweet.user.profile_image_url}" }
+                        .result-text
+                           .result-text-row
+                              %a.result-screen-name{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                                 = tweet.user.screen_name
+                              %span.result-full-name
+                                 = User.get(tweet.user.screen_name).name
+                           .result-text-row
+                              .result-tweet
+                                 = tweet.text.parse_tweet
+                           .result-text-row
+                              .result-metadata
+                                 %a{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name+'/statuses/'+tweet.id}" }
+                                    = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
+                  
+         
+         #statistics
+            #total-tweets
+               = "Tweets Indexed <span class='brown-bold'>"+Tweet.count.to_s+"</span>"
+            #users-indexed
+               #total-users
+                  = "Users Indexed <span id='brown-bold'>"+User.count.to_s+"</span>"
+               %ul#users-list
+                  - User.all( :limit => 7 ).each do |user|
+                     %li.user
+                        %a.user-link{ :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                           %img{ :src => "#{user.profile_image_url}" }

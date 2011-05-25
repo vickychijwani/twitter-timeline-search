@@ -1,7 +1,7 @@
 require 'nokogiri'
 
 module TwitterFunctions
-   NUM_PAGES = 50 # number of pages to index
+   NUM_PAGES = 10 # number of pages to index
    
    def search_tweets(users, search_type, search_term)
       if users == "0"
@@ -134,6 +134,10 @@ class String
       else
          false
       end
+   end
+   
+   def parse_tweet
+      self.gsub(/(http:\/\/\S+)/,'<a class="link" href="\1">\1</a>').gsub(/@(\w+)/,'<a class="tweet-mention" href="http://twitter.com/#!/\1"><span class="at">@</span><span class="at-mention">\1</span></a>').gsub(/#(\w+)/,'<a class="hashtag" href="http://twitter.com/#!/search?q=%23\1"><span class="hash">#</span><span class="tag">\1</span></a>')
    end
 end
 
