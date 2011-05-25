@@ -14,9 +14,6 @@ class Tweet
    property :text,                     Text,          :required => true,   :index => true,   :length => 140,   :lazy => false
    property :source,                   String,        :required => true,                     :length => 200
    
-   property :truncated,                Boolean,       :required => true,                                       :default => false
-   property :favorited,                Boolean,       :required => true,                                       :default => false
-   
    property :in_reply_to_status_id,    String,        :required => false
    property :in_reply_to_screen_name,  String,        :required => false,  :index => true
    

@@ -1,39 +1,39 @@
 %head
    %title Twitter timeline search
+   %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
+   %script{ :type => "text/javascript", :src => "js/script.js" }
    %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
 
 #links
-   %ul{ :style => "list-style:none; display:inline;" }
+   %ul
       %li
-         %a{ :href => ".." } Load another user's tweets
+         %a{ :href => "./load" } Load another user's tweets
       %li
-         %a{ :href => "./search" } Search tweets
+         %a{ :href => ".." } Search tweets
 
 %hr
 
 #search
    %div{ :style => "font-size: 25px;" } Search Tweets:
-   %form{ :action => "search", :method => "get" }
+   %form{ :action => "/", :method => "get" }
       %select{ :name => "users" }
          %option{ :value => "0" } All users
          - User.all.each do |user|
             %option{ :value => "#{user.screen_name}" }
                = "@"+user.screen_name
-      %br
-      %select{ :name => "search_type" }
+      %select#category{ :name => "search_type" }
          %option{ :value => "0" } By keyword
          %option{ :value => "1" } Between 2 dates
          %option{ :value => "2" } Retweets greater than
          %option{ :value => "3" } In reply to
-      %br
       %input#search-box{ :type => "text", :name => "search_term" }
       %input#search-tweets{ :type => "submit", :value => "Search" }
-      %div (Date range format: "yyyy/mm/dd to yyyy/mm/dd")
+      %div#date-format-info (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
 
 %hr
 
 #results
-   - if @search_term && @search_term != ""
+   - if @search_term && @tweets
       %h3
          = "Results for '"+@search_term+"':"
       - @tweets.each do |tweet|

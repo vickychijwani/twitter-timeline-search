@@ -1,10 +1,10 @@
 require 'nokogiri'
 
 module TwitterFunctions
+   @@num_pages = 2
+   @@current_page = 0
    
    def search_tweets(users, search_type, search_term)
-      tweets = []
-      
       if users == "0"
          users = User.all.map { |user| user = user.screen_name }
       else
@@ -14,20 +14,24 @@ module TwitterFunctions
       case search_type
          when 0 then
             # tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.text.downcase.include?(search_term) }
-            tweets = Tweet.all(Tweet.user.screen_name => users, :text.like => "%"+search_term+"%")
+            Tweet.all(Tweet.user.screen_name => users, :text.like => "%"+search_term+"%", :order => [ :created_at.desc ])
          when 1 then
-            date_start, date_end = search_term.split(" to ")
-            tweets = Tweet.all.find_all { |tweet|
-               users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end
-            }
-            # tweets = Tweet.all(Tweet.user.screen_name => users)
-         when 2 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
-         when 3 then tweets = Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.in_reply_to_screen_name == search_term }
+            date_start, date_end = search_term.split(" to ").map { |s| s = s+"T00:00:00+00:00" }
+            date_start, date_end = DateTime.parse(date_start), DateTime.parse(date_end)
+            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.created_at.strftime("20%y/%m/%d") >= date_start && tweet.created_at.strftime("20%y/%m/%d") <= date_end }
+            Tweet.all(Tweet.user.screen_name => users, :created_at.gt => date_start, :order => [ :created_at.desc ]) & Tweet.all(Tweet.user.screen_name => users, :created_at.lt => date_end, :order => [ :created_at.desc ])
+         when 2 then
+            Tweet.all(Tweet.user.screen_name => users, :retweets.gt => search_term.to_i, :order => [ :created_at.desc ])
+            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.retweets > search_term.to_i }
+         when 3 then
+            Tweet.all(Tweet.user.screen_name => users, :in_reply_to_screen_name => search_term, :order => [ :created_at.desc ])
+            # Tweet.all.find_all { |tweet| users.include?(tweet.user.screen_name) && tweet.in_reply_to_screen_name == search_term }
       end
    end
 
    def load_tweets(user_name)
-      (1..50).each do |i|
+      (1..@@num_pages).each do |i|
+         @@current_page = i
          puts "Page #{i}"
          
          url = "http://api.twitter.com/1/statuses/user_timeline.xml?page=#{i}&screen_name=#{user_name}"
@@ -81,8 +85,6 @@ module TwitterFunctions
                   :created_at               => created_at,
                   :text                     => status.first('text'),
                   :source                   => status.first('source'),
-                  :truncated                => status.first('truncated').to_b,
-                  :favorited                => status.first('favorited').to_b,
                   :in_reply_to_status_id    => ( status.first('in_reply_to_status_id') if status.first('in_reply_to_status_id') != "" ),
                   :in_reply_to_screen_name  => ( status.first('in_reply_to_screen_name') if status.first('in_reply_to_screen_name') != "" ),
                   :retweets                 => status.first('retweet_count').to_i

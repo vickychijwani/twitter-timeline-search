@@ -22,7 +22,7 @@ User.auto_migrate! unless User.storage_exists?
 Place.auto_migrate! unless Place.storage_exists?
 Geolocation.auto_migrate! unless Geolocation.storage_exists?
 
-get '/' do
+get '/load' do
    haml :user
 end
 
@@ -32,10 +32,17 @@ get '/loading' do
    # redirect '/search'
 end
 
-get '/search' do
+get '/' do
    @search_term = params[:search_term]
    @search_type = params[:search_type].to_i
    @users = params[:users]
-   @tweets = search_tweets(@users, @search_type, @search_term) if @search_term && @search_term != ""
+   puts @search_type.to_s+" "+@search_type.class.name
+   if @search_term && @search_term != ""
+      @tweets = search_tweets(@users, @search_type, @search_term)
+   elsif @users != "0"
+      @tweets = Tweet.all(Tweet.user.screen_name => @users, :order => [ :created_at.desc ], :limit => 10)
+   else
+      @tweets = Tweet.all(:order => [ :created_at.desc ], :limit => 10)
+   end
    haml :search
 end

@@ -5,9 +5,16 @@ $(function() {
          url : "loading",
          data : { "user" : $("#user-box").val() },
          success : function() {
-            location.href = "/search"
+            location.href = "/"
          }
       });
       return false;
+   });
+   
+   $("select#category").change(function() {
+      if($(this).val() == "1")
+         $("div#date-format-info").show();
+      else
+         $("div#date-format-info").hide();
    });
 });
