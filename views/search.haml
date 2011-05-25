@@ -56,6 +56,10 @@
                   #results-title
                      %p
                         = "Results for '"+@search_term+"':"
+               - else
+                  #results-title
+                     %p
+                        = "Most recently indexed 20 tweets:"
                - @tweets.each do |tweet|
                   .result
                      .result-content
