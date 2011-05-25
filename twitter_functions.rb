@@ -66,7 +66,6 @@ module TwitterFunctions
             tweet_id = status.first('id')
             
             if Tweet.get(tweet_id).nil?
-               puts "========================"+tweet_id+"\n\n\n"
                time_arr = status.first('created_at').split(" ")
                hour, min, sec = time_arr[3].scan(/\d\d/).map(&:to_i)
                created_at = Time.mktime(time_arr[5].to_i, time_arr[1].downcase!, time_arr[2].to_i, hour, min, sec)
@@ -114,7 +113,7 @@ module TwitterFunctions
                end
             
             else
-               puts "||||||||||||||||||||||||||||||"+tweet_id+"\n\n\n"
+               user.save
                return true # if the current tweet exists, then return because all further tweets will also exist (tweets are sorted in descending order of time)
             end # end if Tweet.get(tweet_id).nil?
          end
