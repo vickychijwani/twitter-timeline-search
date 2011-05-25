@@ -32,5 +32,5 @@
             %form#load-tweets-form
                %div#load-tweets-title User:
                %input#load-tweets-box{ :type => "text", :name => "user", :autofocus => "true" }
-               %input#load-tweets-button{ :type => "submit", :value => "Load Tweets", :disabled => "disabled" }
+               %input#load-tweets-button.disabled{ :type => "submit", :value => "Load Tweets", :disabled => "disabled" }
                %img.loading{ :src => "images/progress-dots.gif" }
