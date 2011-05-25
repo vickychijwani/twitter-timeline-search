@@ -51,7 +51,7 @@
 
             #results
                - if !(@search_term && @tweets)
-                  - @tweets = Tweet.all( :order => [ :created_at.desc ] )
+                  - @tweets = Tweet.all( :order => [ :created_at.desc ], :limit => 20 )
                - if @search_term
                   #results-title
                      %p
