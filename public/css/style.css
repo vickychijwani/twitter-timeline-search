@@ -1,4 +1,90 @@
-ul { list-style:none; }
-li { display: inline; margin-right:30px; }
+* {
+   margin:0px;
+   padding:0px;
+}
+ul {
+   list-style-type:none;
+}
 
-div#date-format-info { display:none; }
+.notification {
+   color:red;
+}
+
+div#date-format-info {
+   display:none;
+}
+
+body {
+   background-color:#ACDED6;
+   background-image:url('../images/background-birds.gif');
+   background-position:left 40px;
+   background-attachment:fixed;
+   background-repeat:no-repeat;
+   color:#333;
+   height:100%;
+}
+
+/* top bar */
+#links {
+   position:fixed;
+   top:0;
+   left:0;
+   height:40px;
+   width:100%;
+   z-index:999;
+   background:-webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+   background:-moz-linear-gradient(top,#333,#111);
+}
+#links-wrapper {
+   min-width:920px;
+   max-width:1040px;
+   margin:0 100px;
+   line-height:40px;
+}
+#links li {
+   height:40px;
+   float:left;
+}
+#links li a {
+   color:#bababa;
+   text-decoration:none;
+   font-family: 'Helvetica Neue', Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif;
+   font-size: 14px;
+   height:100%;
+   line-height:40px;
+   float:left;
+   padding:0 10px;
+}
+#links li a:hover {
+   color:white;
+}
+#links li a.active {
+   background:rgba(0,0,0,0.7);
+   font-weight:bold;
+   color:white;
+}
+
+/* content */
+#content {
+   margin:60px 100px 0px 100px;
+   background-color:#fafafa;
+   height:300px;
+   border-radius:5px;
+}
+#main-content {
+   width:540px;
+   float:left;
+   z-index:4;
+   border-radius:5px;
+   box-shadow: 1px 1px 4px rgba(0, 0, 0, .5);
+   height:100%;
+}
+form#load-tweets-form, div#search {
+   padding:15px 20px 0 20px;
+}
+form#load-tweets-form #load-tweets-title, div#search div:first-child {
+   font: bold 18px Helvetica Neue,Helvetica,sans-serif;
+   text-shadow: 0 1px 0 white;
+   margin: 0 0 6px 0;
+   color: #999;
+}

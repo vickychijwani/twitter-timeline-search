@@ -1,7 +1,7 @@
 require 'nokogiri'
 
 module TwitterFunctions
-   NUM_PAGES = 50 # number of pages to index
+   NUM_PAGES = 5 # number of pages to index
    @@tweets = []
    
    def search_tweets(users, search_type, search_term)

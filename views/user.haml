@@ -1,23 +1,26 @@
-%head
-   %title Twitter timeline search
-   %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
-   %script{ :type => "text/javascript", :src => "js/script.js" }
-   %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
+!!! Strict
+%html
+   %head
+      %title Twitter timeline search
+      %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
+      %script{ :type => "text/javascript", :src => "js/script.js" }
+      %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
 
-#links
-   %ul
-      %li
-         %a{ :href => "./load" } Load another user's tweets
-      %li
-         %a{ :href => ".." } Search tweets
+   %body
+      #links
+         #links-wrapper
+            %ul
+               %li
+                  %a.active{ :href => "./load" } Add User
+               %li
+                  %a{ :href => ".." } Search Tweets
 
-%hr
+      - if params[:user_exists] == "false"
+         #no-user.notification No such user.
 
-- if params[:user_exists] == "false"
-   #no-user{ :style => "color:red;" } No such user.
-
-#user
-   %form#load-tweets-form
-      %div{ :style => "font-size: 25px;" } User:
-      %input#user-box{ :type => "text", :name => "user" }
-      %input#load-tweets{ :type => "submit", :value => "Load Tweets" }
+      #content
+         #main-content
+            %form#load-tweets-form
+               %div#load-tweets-title User:
+               %input#load-tweets-box{ :type => "text", :name => "user" }
+               %input#load-tweets-button{ :type => "submit", :value => "Load Tweets" }

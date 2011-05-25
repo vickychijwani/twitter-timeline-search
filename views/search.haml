@@ -1,49 +1,50 @@
-%head
-   %title Twitter timeline search
-   %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
-   %script{ :type => "text/javascript", :src => "js/script.js" }
-   %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
+!!! Strict
+%html
+   %head
+      %title Twitter timeline search
+      %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
+      %script{ :type => "text/javascript", :src => "js/script.js" }
+      %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
 
-#links
-   %ul
-      %li
-         %a{ :href => "./load" } Load another user's tweets
-      %li
-         %a{ :href => ".." } Search tweets
+   %body
+      #links
+         #links-wrapper
+            %ul
+               %li
+                  %a{ :href => "./load" } Add User
+               %li
+                  %a.active{ :href => ".." } Search Tweets
+      #content
+         #main-content
+            #search
+               %div{ :style => "font-size: 25px;" } Search Tweets:
+               %form{ :action => "/", :method => "get" }
+                  %select{ :name => "users" }
+                     %option{ :value => "0" } All users
+                     - User.all.each do |user|
+                        %option{ :value => "#{user.screen_name}" }
+                           = "@"+user.screen_name
+                  %select#category{ :name => "search_type" }
+                     %option{ :value => "0" } By keyword
+                     %option{ :value => "1" } Between 2 dates
+                     %option{ :value => "2" } Retweets greater than
+                     %option{ :value => "3" } In reply to
+                  %input#search-box{ :type => "text", :name => "search_term" }
+                  %input#search-tweets{ :type => "submit", :value => "Search" }
+                  %div#date-format-info
+                     (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
 
-%hr
+            - if params[:status] && params[:status] == "done"
+               #status-done.notification{ :style => "color:red;" } Indexing is over.
 
-#search
-   %div{ :style => "font-size: 25px;" } Search Tweets:
-   %form{ :action => "/", :method => "get" }
-      %select{ :name => "users" }
-         %option{ :value => "0" } All users
-         - User.all.each do |user|
-            %option{ :value => "#{user.screen_name}" }
-               = "@"+user.screen_name
-      %select#category{ :name => "search_type" }
-         %option{ :value => "0" } By keyword
-         %option{ :value => "1" } Between 2 dates
-         %option{ :value => "2" } Retweets greater than
-         %option{ :value => "3" } In reply to
-      %input#search-box{ :type => "text", :name => "search_term" }
-      %input#search-tweets{ :type => "submit", :value => "Search" }
-      %div#date-format-info
-         (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
-
-- if params[:status] == "done"
-   #status-done{ :style => "color:red;" } Indexing is over.
-
-%hr
-
-#results
-   - if @search_term && @tweets
-      %h3
-         = "Results for '"+@search_term+"':"
-      - @tweets.each do |tweet|
-         %p{ :style => "font-weight:bold;" }
-            = "@"+User.get(tweet.user.screen_name).screen_name
-         %p{ :float => "left" }
-            = tweet.text
-         %p{ :float => "left" }
-            = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
+            #results
+               - if @search_term && @tweets
+                  %h3
+                     = "Results for '"+@search_term+"':"
+                  - @tweets.each do |tweet|
+                     %p{ :style => "font-weight:bold;" }
+                        = "@"+User.get(tweet.user.screen_name).screen_name
+                     %p{ :float => "left" }
+                        = tweet.text
+                     %p{ :float => "left" }
+                        = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"

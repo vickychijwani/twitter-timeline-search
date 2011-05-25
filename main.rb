@@ -12,7 +12,6 @@ require 'net/http'
 require 'open-uri'
 require 'models/tweet'
 require 'twitter_functions'
-require 'json'
 
 include TwitterFunctions
 
