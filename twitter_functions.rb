@@ -1,7 +1,7 @@
 require 'nokogiri'
 
 module TwitterFunctions
-   NUM_PAGES = 5 # number of pages to index
+   NUM_PAGES = 50 # number of pages to index
    
    def search_tweets(users, search_type, search_term)
       if users == "0"
@@ -33,7 +33,7 @@ module TwitterFunctions
             puts e.message
             puts e.backtrace[-20..-1]
             puts "No such user."
-            redirect '/?user_exists=false'
+            return false;
          end
          timeline_xml_doc = Nokogiri::XML(open(url))
          
@@ -113,13 +113,15 @@ module TwitterFunctions
                end
             
             else
-               return # if the current tweet exists, then return because all further tweets will also exist (tweets are sorted in descending order of time)
+               return true # if the current tweet exists, then return because all further tweets will also exist (tweets are sorted in descending order of time)
             end # end if Tweet.get(tweet_id).nil?
          end
          
          user.save
       end
-   end
+      
+      return true
+   end # end load_tweets
    
 end
 

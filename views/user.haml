@@ -1,26 +1,36 @@
 !!! Strict
 %html
    %head
-      %title Twitter timeline search
+      %title Twerch
       %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
       %script{ :type => "text/javascript", :src => "js/script.js" }
       %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
-
+   
    %body
       #links
          #links-wrapper
             %ul
                %li
+                  #logo twerch
+                  #bird
+                     %img{ :src => "images/twitter.png" }
+               %li
                   %a.active{ :href => "./load" } Add User
                %li
                   %a{ :href => ".." } Search Tweets
-
-      - if params[:user_exists] == "false"
-         #no-user.notification No such user.
-
+            #caption
+               The Holy Grail of Twitter search.
+      
+      #message-drawer
+         .message.error
+            .message-inside
+               %span No such user.
+               %a.dismiss{ :href => "#" } x
+      
       #content
          #main-content
             %form#load-tweets-form
                %div#load-tweets-title User:
-               %input#load-tweets-box{ :type => "text", :name => "user" }
-               %input#load-tweets-button{ :type => "submit", :value => "Load Tweets" }
+               %input#load-tweets-box{ :type => "text", :name => "user", :autofocus => "true" }
+               %input#load-tweets-button{ :type => "submit", :value => "Load Tweets", :disabled => "disabled" }
+               %img.loading{ :src => "images/progress-dots.gif" }

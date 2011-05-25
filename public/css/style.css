@@ -1,3 +1,7 @@
+@font-face {
+   font-family: "Pico Black";
+   src: url('../fonts/pico-black.ttf');
+} 
 * {
    margin:0px;
    padding:0px;
@@ -5,9 +9,46 @@
 ul {
    list-style-type:none;
 }
+a {
+   text-decoration:none;
+}
 
-.notification {
-   color:red;
+input[type=text] {
+   height:15px;
+   border:1px solid #cccccc;
+   border-radius:4px;
+   padding:8px;
+   color:#222;
+   font: 14px/18px "Helvetica Neue", Arial, sans-serif;
+   outline:none;
+   -webkit-transition: all 0.25s ease-in-out;
+}
+input[type=button],
+input[type=submit] {
+   height:30px;
+   border-radius:4px;
+   font-size:15px;
+   font-weight:300;
+   padding:6px 9px;
+   border:1px solid #bbbbbb;
+   color:#333;
+   background-image: -webkit-gradient(
+       linear,
+       left bottom,
+       left top,
+       color-stop(1, rgb(255,255,255)),
+       color-stop(0.53, rgb(230,230,230))
+   );
+   background-image: -moz-linear-gradient(
+       center bottom,
+       rgb(255,255,255) 100%,
+       rgb(230,230,230) 53%
+   );
+}
+input[type=button].disabled,
+input[type=submit].disabled {
+   color:#ccc;
+   border:1px solid #eee;
 }
 
 div#date-format-info {
@@ -24,6 +65,13 @@ body {
    height:100%;
 }
 
+/* generic classes */
+.loading {
+   float:right;
+   margin:30px 10px 0 0;
+   display:none;
+}
+
 /* top bar */
 #links {
    position:fixed;
@@ -36,10 +84,19 @@ body {
    background:-moz-linear-gradient(top,#333,#111);
 }
 #links-wrapper {
-   min-width:920px;
-   max-width:1040px;
    margin:0 100px;
    line-height:40px;
+}
+#links #logo {
+   font-family:"Pico Black";
+   color:#f8f8f8;
+   font-size:25px;
+   margin-left:10px;
+   float:left;
+}
+#links #bird {
+   float:left;
+   margin:0 20px 0 -5px;
 }
 #links li {
    height:40px;
@@ -64,6 +121,69 @@ body {
    color:white;
 }
 
+/* caption */
+#caption {
+   margin-right:10px;
+   border-radius:5px;
+   color:#f8f8f8;
+   font-family:"Pico Black";
+   font-size:20px;
+   height:100%;
+   line-height:40px;
+   float:right;
+}
+
+/* message drawer */
+#message-drawer {
+   position:fixed;
+   top:40px;
+   z-index:998;
+   text-align:center;
+   width:100%;
+   display:none;
+}
+#message-drawer .message {
+   border-radius:0px 0px 5px 5px;
+   background:rgba(0,0,0,0.5);
+   min-width:100px;
+   max-width:490px;
+   width:auto;
+   display:inline-block;
+   margin:0 auto;
+   padding:0 6px 5px 6px;
+   border:0;
+   font-size:13px;
+   line-height:17px;
+   clear:both;
+   position:relative;
+}
+#message-drawer .message .message-inside {
+   background:white;
+   padding:8px 12px 8px 16px;
+   display:inline-block;
+   font-size:13px;
+   min-width:100px;
+   border-radius:0px 0px 3px 3px;
+}
+#message-drawer .message .message-inside span {
+   display:inline-block;
+   color:#333333;
+   max-width:440px;
+   vertical-align:middle;
+   font-size:13px;
+   font:13px/1.5 Helvetica Neue,Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif;
+}
+#message-drawer .dismiss {
+   display:inline-block;
+   padding:6px 6px 2px 6px;
+   height:22px;
+   margin:-5px -10px -10px 10px;
+   font-family:Helvetica Neue,Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif;
+   font-size:12px;
+   background:#f8f8f8;
+   color:#999999;
+}
+
 /* content */
 #content {
    margin:60px 100px 0px 100px;
@@ -79,12 +199,30 @@ body {
    box-shadow: 1px 1px 4px rgba(0, 0, 0, .5);
    height:100%;
 }
-form#load-tweets-form, div#search {
+#main-content form#load-tweets-form,
+#main-content div#search {
    padding:15px 20px 0 20px;
 }
-form#load-tweets-form #load-tweets-title, div#search div:first-child {
-   font: bold 18px Helvetica Neue,Helvetica,sans-serif;
+#main-content form#load-tweets-form #load-tweets-title,
+#main-content div#search div:first-child {
+   font: bold 18px "Helvetica Neue", Helvetica, sans-serif;
    text-shadow: 0 1px 0 white;
    margin: 0 0 6px 0;
    color: #999;
+}
+
+/* load tweets page */
+#main-content input#load-tweets-box {
+   width:482px;
+}
+#main-content input#load-tweets-box:hover {
+   border:1px solid #AAAAAA;
+}
+#main-content input#load-tweets-box:focus {
+   box-shadow:0 0 8px #66D2FF;
+}
+#main-content input#load-tweets-button {
+   width:105px;
+   margin-top:15px;
+   float:right;
 }
