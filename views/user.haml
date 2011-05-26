@@ -48,3 +48,13 @@
                      %li.user
                         %a.user-link{ :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
                            %img{ :src => "#{user.profile_image_url}" }
+            #popular-tweets
+               #popular-tweets-title Popular Tweets
+               - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|
+                  .popular-tweet
+                     .popular-tweet-row
+                        %a.popular-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                           = tweet.user.screen_name
+                     .popular-tweet-row
+                        .popular-tweet-text
+                           = tweet.text.parse_tweet

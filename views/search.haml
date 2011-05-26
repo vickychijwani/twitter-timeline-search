@@ -45,7 +45,7 @@
                      %option{ :value => "2" } Retweets greater than
                      %option{ :value => "3" } In reply to
                   %input#search-tweets-box{ :type => "text", :name => "search_term", :autofocus => "autofocus" }
-                  %input#search-tweets-button.disabled{ :type => "submit", :value => "Search", :disabled => "disabled" }
+                  %input#search-tweets-button{ :type => "submit", :value => "Search", :disabled => "disabled" }
                   %div#date-format-info
                      (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
 
@@ -64,11 +64,11 @@
                   .result
                      .result-content
                         .result-image
-                           %a{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                           %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
                               %img{ :src => "#{tweet.user.profile_image_url}" }
                         .result-text
                            .result-text-row
-                              %a.result-screen-name{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                              %a.result-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
                                  = tweet.user.screen_name
                               %span.result-full-name
                                  = User.get(tweet.user.screen_name).name
@@ -77,9 +77,9 @@
                                  = tweet.text.parse_tweet
                            .result-text-row
                               .result-metadata
-                                 %a{ :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name+'/statuses/'+tweet.id}" }
+                                 %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name+'/statuses/'+tweet.id}" }
                                     = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
-                  
+         
          
          #statistics
             #total-tweets
@@ -90,5 +90,15 @@
                %ul#users-list
                   - User.all( :limit => 7 ).each do |user|
                      %li.user
-                        %a.user-link{ :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                        %a.user-link{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
                            %img{ :src => "#{user.profile_image_url}" }
+            #popular-tweets
+               #popular-tweets-title Popular Tweets
+               - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|
+                  .popular-tweet
+                     .popular-tweet-row
+                        %a.popular-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                           = tweet.user.screen_name
+                     .popular-tweet-row
+                        .popular-tweet-text
+                           = tweet.text.parse_tweet

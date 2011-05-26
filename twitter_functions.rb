@@ -138,7 +138,7 @@ class String
    end
    
    def parse_tweet
-      self.gsub(/(http:\/\/\S+)/,'<a class="link" href="\1">\1</a>').gsub(/@(\w+)/,'<a class="tweet-mention" href="http://twitter.com/#!/\1"><span class="at">@</span><span class="at-mention">\1</span></a>').gsub(/#(\w+)/,'<a class="hashtag" href="http://twitter.com/#!/search?q=%23\1"><span class="hash">#</span><span class="tag">\1</span></a>')
+      self.gsub(/(http:\/\/\S+)/,'<a target="_blank" class="link" href="\1">\1</a>').gsub(/@(\w+)/,'<a target="_blank" class="tweet-mention" href="http://twitter.com/#!/\1"><span class="at">@</span><span class="at-mention">\1</span></a>').gsub(/#(\w+)/,'<a target="_blank" class="hashtag" href="http://twitter.com/#!/search?q=%23\1"><span class="hash">#</span><span class="tag">\1</span></a>')
    end
 end
 

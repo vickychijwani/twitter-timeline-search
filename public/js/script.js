@@ -23,10 +23,10 @@ $(function() {
       return false;
    });
    
-   $("form#load-tweets-form input#load-tweets-box,#search form input#search-tweets-box").keyup(check_input);
-   $("form#load-tweets-form input#load-tweets-box,#search form input#search-tweets-box").click(check_input);
-   $("form#load-tweets-form input#load-tweets-box,#search form input#search-tweets-box").dblclick(check_input);
-   $("form#load-tweets-form input#load-tweets-box,#search form input#search-tweets-box").blur(check_input);
+   $("form#load-tweets-form input#load-tweets-box").keyup(check_input);
+   $("form#load-tweets-form input#load-tweets-box").click(check_input);
+   $("form#load-tweets-form input#load-tweets-box").dblclick(check_input);
+   $("form#load-tweets-form input#load-tweets-box").blur(check_input);
    
    $("select#category").change(function() {
       if($(this).val() == "1")
