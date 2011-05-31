@@ -91,7 +91,8 @@
                   - User.all( :limit => 7 ).each do |user|
                      %li.user
                         %a.user-link{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
-                           %img{ :src => "#{user.profile_image_url}" }
+                           %img{ :src => "#{user.profile_image_url}", :title => "#{user.screen_name}" }
+                        %a.remove-user{ :href => "#", :title => "Remove @#{user.screen_name} from the index", :name => "#{user.screen_name}" } &times;
             #popular-tweets
                #popular-tweets-title Popular Tweets
                - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|

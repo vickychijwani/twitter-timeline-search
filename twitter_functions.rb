@@ -3,6 +3,16 @@ require 'nokogiri'
 module TwitterFunctions
    NUM_PAGES = 10 # number of pages to index
    
+   def remove_user(user_name)
+      if (user = User.get(user_name))
+         Tweet.all(:user => user).destroy!
+         user.destroy!
+         return true
+      else
+         return false
+      end
+   end
+   
    def search_tweets(users, search_type, search_term)
       if users == "0"
          users = User.all.map { |user| user = user.screen_name }

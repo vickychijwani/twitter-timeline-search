@@ -11,15 +11,32 @@ $(function() {
          success : function(success) {
             $(".loading").hide();
             $(this).children("#load-tweets-button").enable();
-            if(success == "true") {
+            if(success == "true")
                location.href = "/?status=done";
-            }
-            else {
+            else
                $("#message-drawer .message-inside span").html("No such user.");
-            }
          }
       });
       
+      return false;
+   });
+   
+    $("a.remove-user").click(function() {
+      $("#message-drawer span").html("Removing user...");
+      $("#message-drawer").show();
+      $.ajax({
+         url: "loading",
+         data: { "remove" : $(this).attr("name") },
+         success : function(success) {
+            if(success == "true") {
+               $("#message-drawer span").html("User removed.");
+               location.href = location.href;
+            }
+            else {
+               $("#message-drawer span").html("No such user in the database.");
+            }
+         }
+      });
       return false;
    });
    

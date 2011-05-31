@@ -27,8 +27,13 @@ get '/load' do
 end
 
 get '/loading' do
-   user = params[:user]
-   load_tweets(user).to_s
+   if params[:user]
+      user = params[:user]
+      load_tweets(user).to_s
+   elsif params[:remove]
+      user = params[:remove]
+      remove_user(user).to_s
+   end
 end
 
 get '/' do
