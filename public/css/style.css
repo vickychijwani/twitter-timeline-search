@@ -13,6 +13,9 @@ ul {
 a {
    text-decoration:none;
 }
+a:hover {
+   text-decoration:underline;
+}
 
 select {
    height:25px;
@@ -235,9 +238,11 @@ body {
    height:100%;
    background:#f5f5f5;
 }
-#main-content form#load-tweets-form,
+#main-content div#load,
 #main-content div#search {
    padding:15px 20px 0 20px;
+   position:relative;
+   overflow:auto;
 }
 #main-content form#load-tweets-form #load-tweets-title,
 #main-content div#search div:first-child {
@@ -246,25 +251,26 @@ body {
    margin: 0 0 6px 0;
    color: #999;
 }
-#main-content input#load-tweets-box,
+#main-content #load input#load-tweets-box,
 #main-content #search input#search-tweets-box {
    width:482px;
 }
-#main-content input#load-tweets-button,
+#main-content #load input#load-tweets-button,
 #main-content #search input#search-tweets-button {
    margin-top:10px;
    float:right;
 }
 
 /* load tweets page */
-#main-content input#load-tweets-button {
+#main-content #load {
+   height:130px;
+}
+#main-content #load input#load-tweets-button {
    width:105px;
 }
 
 /* search tweets page */
 #main-content #search {
-   position:relative;
-   overflow:auto;
    height:173px;
 }
 #main-content #search select {
@@ -393,9 +399,9 @@ div#statistics div#users-indexed li.user a.remove-user {
    position:absolute;
    top:0px;
    right:0px;
-   color:#ccc;
+   color:#fff;
    font-family:Tahoma,sans-serif;
-   background:rgba(0,0,0,0.6);
+   background:rgba(0,0,0,0.4);
    font-size:20px;
    height:11px;
    width:11px;
@@ -413,7 +419,21 @@ div#statistics #popular-tweets .popular-tweet {
    display:block;
    padding:5px 10px;
    font-size:13px;
+   border-bottom:1px solid #dbdbdb; 
 }
 div#statistics #popular-tweets .popular-tweet .popular-screen-name {
    font-weight:bold;
+   float:left;
+   margin-right:5px;
+}
+div#statistics #popular-tweets .popular-tweet .popular-retweets {
+   font-size:10px;
+   color:#555;
+}
+div#statistics #popular-tweets .popular-tweet .popular-retweets img {
+   padding-top:3px;
+}
+div#statistics #popular-tweets .popular-tweet .popular-retweets span {
+   position:relative;
+   top:-2px;
 }

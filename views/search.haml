@@ -1,105 +1,54 @@
-!!! Strict
-%html
-   %head
-      %title Twitcher
-      %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
-      %script{ :type => "text/javascript", :src => "js/script.js" }
-      %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
-      %link{ :rel => "shortcut icon", :href => "images/favicon.ico" }
-   
-   %body
-      #links
-         #links-wrapper
-            %ul
-               %li
-                  #logo
-                     %a{ :href => "/" } twitcher
-                  #bird
-                     %img{ :src => "images/twitter.png" }
-               %li
-                  %a{ :href => "./load" } Add User
-               %li
-                  %a.active{ :href => ".." } Search Tweets
-            #caption
-               The Holy Grail of Twitter search.
-      
-      #message-drawer
-         .message.error
-            .message-inside
-               %span
-               %a.dismiss{ :href => "#" } x
-      
-      #content
-         #main-content
-            #search
-               %div{ :style => "font-size: 25px;" } Search Tweets:
-               %form{ :action => "/", :method => "get" }
-                  %select{ :name => "users" }
-                     %option{ :value => "0" } All users
-                     - User.all.each do |user|
-                        %option{ :value => "#{user.screen_name}" }
-                           = "@"+user.screen_name
-                  %select#category{ :name => "search_type" }
-                     %option{ :value => "0" } By keyword
-                     %option{ :value => "1" } Between 2 dates
-                     %option{ :value => "2" } Retweets greater than
-                     %option{ :value => "3" } In reply to
-                  %input#search-tweets-box{ :type => "text", :name => "search_term", :autofocus => "autofocus" }
-                  %input#search-tweets-button{ :type => "submit", :value => "Search", :disabled => "disabled" }
-                  %div#date-format-info
-                     (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
+- @page = "search_tweets"
 
-            #results
-               - if !(@search_term && @tweets)
-                  - @tweets = Tweet.all( :order => [ :created_at.desc ], :limit => 20 )
-               - if @search_term
-                  #results-title
-                     %p
-                        = "Results for '"+@search_term+"':"
-               - else
-                  #results-title
-                     %p
-                        = "Most recently indexed 20 tweets:"
-               - @tweets.each do |tweet|
-                  .result
-                     .result-content
-                        .result-image
-                           %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
-                              %img{ :src => "#{tweet.user.profile_image_url}" }
-                        .result-text
-                           .result-text-row
-                              %a.result-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
-                                 = tweet.user.screen_name
-                              %span.result-full-name
-                                 = User.get(tweet.user.screen_name).name
-                           .result-text-row
-                              .result-tweet
-                                 = tweet.text.parse_tweet
-                           .result-text-row
-                              .result-metadata
-                                 %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name+'/statuses/'+tweet.id}" }
-                                    = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"
-         
-         
-         #statistics
-            #total-tweets
-               = "Tweets Indexed <span class='brown-bold'>"+Tweet.count.to_s+"</span>"
-            #users-indexed
-               #total-users
-                  = "Users Indexed <span id='brown-bold'>"+User.count.to_s+"</span>"
-               %ul#users-list
-                  - User.all( :limit => 7 ).each do |user|
-                     %li.user
-                        %a.user-link{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
-                           %img{ :src => "#{user.profile_image_url}", :title => "#{user.screen_name}" }
-                        %a.remove-user{ :href => "#", :title => "Remove @#{user.screen_name} from the index", :name => "#{user.screen_name}" } &times;
-            #popular-tweets
-               #popular-tweets-title Popular Tweets
-               - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|
-                  .popular-tweet
-                     .popular-tweet-row
-                        %a.popular-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
-                           = tweet.user.screen_name
-                     .popular-tweet-row
-                        .popular-tweet-text
-                           = tweet.text.parse_tweet
+#search
+   %div{ :style => "font-size: 25px;" } Search Tweets:
+   %form{ :action => "/", :method => "get" }
+      %select{ :name => "users" }
+         %option{ :value => "0" } All users
+         - User.all.each do |user|
+            %option{ :value => "#{user.screen_name}" }
+               = "@"+user.screen_name
+      %select#category{ :name => "search_type" }
+         %option{ :value => "0" } By keyword
+         %option{ :value => "1" } Between 2 dates
+         %option{ :value => "2" } Retweets greater than
+         %option{ :value => "3" } In reply to
+      %input#search-tweets-box{ :type => "text", :name => "search_term", :autofocus => "autofocus" }
+      %input#search-tweets-button{ :type => "submit", :value => "Search" }
+      %div#date-format-info
+         (Date range format: "yyyy-mm-dd to yyyy-mm-dd")
+
+#results 
+   #results-title    
+      - if @search_term
+         %p
+            = "#{@tweets.length} results for '"+@search_term+"':"
+      - elsif Tweet.all.length == 0
+         %p
+            = "Twitch needs something to play with. Why don't you <a href='/load'>add a user</a>&#63;"
+      - else
+         %p
+            = "Recent tweets:"
+          
+   - if !(@search_term && @tweets)
+      - @tweets = Tweet.all( :order => [ :created_at.desc ], :limit => 20 )
+    
+   - @tweets.each do |tweet|
+      .result
+         .result-content
+            .result-image
+               %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                  %img{ :src => "#{tweet.user.profile_image_url}" }
+            .result-text
+               .result-text-row
+                  %a.result-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                     = tweet.user.screen_name
+                  %span.result-full-name
+                     = tweet.user.name
+               .result-text-row
+                  .result-tweet
+                     = tweet.text.parse_tweet
+               .result-text-row
+                  .result-metadata
+                     %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name+'/statuses/'+tweet.id}" }
+                        = "on "+tweet.created_at.strftime("%H:%M:%S, %a %d %B, 20%y")+", retweeted "+tweet.retweets.to_s+" times"

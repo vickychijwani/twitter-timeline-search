@@ -1,60 +1,32 @@
-!!! Strict
-%html
-   %head
-      %title Twitcher
-      %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
-      %script{ :type => "text/javascript", :src => "js/script.js" }
-      %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
-      %link{ :rel => "shortcut icon", :href => "images/favicon.ico" }
-   
-   %body
-      #links
-         #links-wrapper
-            %ul
-               %li
-                  #logo
-                     %a{ :href => "/" } twitcher
-                  #bird
-                     %img{ :src => "images/twitter.png" }
-               %li
-                  %a.active{ :href => "./load" } Add User
-               %li
-                  %a{ :href => ".." } Search Tweets
-            #caption
-               The Holy Grail of Twitter search.
-      
-      #message-drawer
-         .message.error
-            .message-inside
-               %span
-               %a.dismiss{ :href => "#" } x
-      
-      #content
-         #main-content
-            %form#load-tweets-form
-               %div#load-tweets-title User:
-               %input#load-tweets-box{ :type => "text", :name => "user", :autofocus => "true" }
-               %input#load-tweets-button.disabled{ :type => "submit", :value => "Load Tweets", :disabled => "disabled" }
-               %img.loading{ :src => "images/progress-dots.gif" }
-         
-         #statistics
-            #total-tweets
-               = "Tweets Indexed <span class='brown-bold'>"+Tweet.count.to_s+"</span>"
-            #users-indexed
-               #total-users
-                  = "Users Indexed <span id='brown-bold'>"+User.count.to_s+"</span>"
-               %ul#users-list
-                  - User.all( :limit => 7 ).each do |user|
-                     %li.user
-                        %a.user-link{ :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
-                           %img{ :src => "#{user.profile_image_url}" }
-            #popular-tweets
-               #popular-tweets-title Popular Tweets
-               - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|
-                  .popular-tweet
-                     .popular-tweet-row
-                        %a.popular-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
-                           = tweet.user.screen_name
-                     .popular-tweet-row
-                        .popular-tweet-text
-                           = tweet.text.parse_tweet
+- @page = "add_user"
+
+#load
+   %form#load-tweets-form
+      %div#load-tweets-title User:
+      %input#load-tweets-box{ :type => "text", :name => "user", :autofocus => "true" }
+      %input#load-tweets-button{ :type => "submit", :value => "Load Tweets" }
+      %img.loading{ :src => "images/progress-dots.gif" }
+
+#results
+   - @users = User.all
+   #results-title
+      - if @users.length == 0
+         = "Twitch needs something to play with. Why don't you add a user?"      
+      - else
+         = "#{@users.length} users indexed:"
+
+   - @users.each do |user|
+      .result
+         .result-content
+            .result-image
+               %a{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                  %img{ :src => "#{user.profile_image_url}" }
+            .result-text
+               .result-text-row
+                  %a.result-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                     = user.screen_name
+                  %span.result-full-name
+                     = user.name
+               .result-text-row
+                  .result-tweet
+                     = user.description

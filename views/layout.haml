@@ -1,0 +1,69 @@
+!!! Strict
+- @title = "Twitch"
+%html
+   %head
+      %title= @title
+      %script{ :type => "text/javascript", :src => "js/jquery-1.6.1.min.js" }
+      %script{ :type => "text/javascript", :src => "js/script.js" }
+      %link{ :rel => "stylesheet", :type => "text/css", :href => "css/style.css" }
+      %link{ :rel => "shortcut icon", :href => "images/favicon.ico" }
+   
+   %body
+      #links
+         #links-wrapper
+            %ul
+               %li
+                  #logo
+                     %a{ :href => "/" }= @title.downcase
+                  #bird
+                     %img{ :src => "images/twitter.png" }
+               %li
+                  - if @page == "add_user"
+                     %a.active{ :href => "./load" } Add User
+                  - else
+                     %a{ :href => "./load" } Add User
+               %li
+                  - if @page == "search_tweets"
+                     %a.active{ :href => ".." } Search Tweets
+                  - else
+                     %a{ :href => ".." } Search Tweets
+            #caption
+               The Holy Grail of Twitter search.
+      
+      #message-drawer
+         .message.error
+            .message-inside
+               %span
+               %a.dismiss{ :href => "#" } x
+      
+      #content
+         #main-content
+            = yield
+       
+         #statistics
+            #total-tweets
+               = "Tweets Indexed <span class='brown-bold'>"+Tweet.count.to_s+"</span>"
+            #users-indexed
+               #total-users
+                  = "Users Indexed <span id='brown-bold'>"+User.count.to_s+"</span>"
+               %ul#users-list
+                  - User.all( :limit => 7 ).each do |user|
+                     %li.user
+                        %a.user-link{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+user.screen_name}" }
+                           %img{ :src => "#{user.profile_image_url}", :title => "#{user.screen_name}" }
+                        %a.remove-user{ :href => "#", :title => "Remove @#{user.screen_name} from the index", :name => "#{user.screen_name}" } &times;
+
+            - if Tweet.all.length != 0
+               #popular-tweets
+                  #popular-tweets-title Popular Tweets
+                  - Tweet.all( :order => [ :retweets.desc ], :limit => 8 ).each do |tweet|
+                     .popular-tweet
+                        .popular-tweet-row
+                           %a.popular-screen-name{ :target => "_blank", :href => "#{'http://twitter.com/#!/'+tweet.user.screen_name}" }
+                              = tweet.user.screen_name
+                           .popular-retweets
+                              %img{ :src => "images/retweet.png" }
+                              %span= tweet.retweets.to_s
+                        .popular-tweet-row
+                           .popular-tweet-text
+                              = tweet.text.parse_tweet
